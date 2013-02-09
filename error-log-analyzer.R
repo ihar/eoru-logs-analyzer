@@ -87,10 +87,26 @@ dim(df)
 head(df)
 tail(df)
 
-# ТУДУ(safonov):
-# 1) частота различных типов сообщений по месяцам, поле message: 
-#     1.1) запросы несуществующих слов (wrong word requested)
-#     1.2) запросы несуществующих страниц и попытки взлома словаря (page requested)
-#     1.3) нераспознанные символы в адресной строке (severity)
-# 2) распределение ошибок по месяцам, неделям, часам
-# 3) топ неверно запрошенных слов в строке поиска
+# Все записи имеют тип ERROR, можно эту колонку дальше не тянуть
+unique(df$type)
+df$type <- NULL
+
+table(df$message)
+
+df_wrong_word <- subset(df, df$message == "Wrong word requested")
+df_wrong_word$message <- NULL
+
+df_wrong_page <- subset(df, df$message == "Page requested")
+df_wrong_page$message <- NULL
+
+df_wrong_query <- subset(df, df$message == "Query error")
+df_wrong_query$message <- NULL
+
+df_wrong_symbols <- subset(df, df$message == "Severity")
+df_wrong_symbols$message <- NULL
+# Тут ещё в text повторяется "Illegal character". Тоже бесполезная информация
+df_wrong_symbols$text <- NULL
+
+nrow(df) == nrow(df_wrong_page) + nrow(df_wrong_query) +
+            nrow(df_wrong_symbols) + nrow(df_wrong_word)
+
