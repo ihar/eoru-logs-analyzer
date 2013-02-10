@@ -104,9 +104,19 @@ df_wrong_query$message <- NULL
 
 df_wrong_symbols <- subset(df, df$message == "Severity")
 df_wrong_symbols$message <- NULL
-# Тут ещё в text повторяется "Illegal character". Тоже бесполезная информация
+# Тут ещё в text повторяется "Illegal character". 
+# Тоже бесполезная информация, если повторяется в каждой строчке
 df_wrong_symbols$text <- NULL
 
 nrow(df) == nrow(df_wrong_page) + nrow(df_wrong_query) +
             nrow(df_wrong_symbols) + nrow(df_wrong_word)
 
+# Собрать статистику по словам с нулевым результатом поиска
+wrong_words_decreasing <- sort(table(df_wrong_word$text), decreasing=TRUE)
+word_limit <- 25
+head(wrong_words_decreasing, word_limit) # как  львЁнок и черепаха пельи песьню  
+wrong_words_top <- wrong_words_decreasing[1:word_limit]
+wword <- names(wrong_words_top)[1]
+wword_dates <- df_wrong_word[df_wrong_word$text==wword,]
+library("ggplot2")
+ggplot(wword_dates, aes(date)) + geom_bar(colour="gray") + labs(title=wword)
