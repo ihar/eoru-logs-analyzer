@@ -4,7 +4,8 @@
 # 
 # Анализ логов поможет узнать, как можно улучшить систему поиска на сайте.
 
-data_dir <- "./data/"
+data_dir <- "d:/webservers/other/eoru_logs/2012/"
+# data_dir <- "./data/"
 data_files <- list.files(data_dir, "*.txt")
 
 # Формат строчки в текстовом файле
@@ -82,6 +83,7 @@ for (fname in files_list) {
   df <- rbind(df, ProcessFile(fname))
 }
 
+Sys.timezone()
 df <- CleanData(df)
 dim(df)
 head(df)
@@ -118,5 +120,4 @@ head(wrong_words_decreasing, word_limit) # как  львЁнок и череп�
 wrong_words_top <- wrong_words_decreasing[1:word_limit]
 wword <- names(wrong_words_top)[1]
 wword_dates <- df_wrong_word[df_wrong_word$text==wword,]
-library("ggplot2")
-ggplot(wword_dates, aes(date)) + geom_bar(colour="gray") + labs(title=wword)
+
