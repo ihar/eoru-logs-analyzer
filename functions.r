@@ -55,6 +55,9 @@ CleanData <- function(df) {
   #   Датафрейм с форматированными датой и временем, без пустых полей,
   #   без одинарных кавычек в поле text 
   df <- na.omit(df)
+  # Чтобы даты конвертировались правильно,
+  # надо включить английскую локаль
+  Sys.setlocale(category="LC_TIME", "English")
   df$date <- strptime(df$date, "%Y-%m-%d %H:%M:%S")
   df$text <- gsub("'", "", df$text)
   return(df)
