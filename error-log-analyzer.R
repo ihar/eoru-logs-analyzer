@@ -80,7 +80,8 @@ wrong_req_sum / c(days_interval, weeks_interval, hours_interval)
 
 # Среднее количество плохих запросов всех 4 категорий вместе
 # (в этом случае плохой запрос = одной записи в лог-файле)
-wrong_req_sum / c(days_interval, weeks_interval, hours_interval)
+nrow(df) / c(days_interval, weeks_interval, hours_interval)
+# 91.653414 641.573896   3.818892
 
 # Так что там с плохой датой?
 df[is.na(df$date),]
