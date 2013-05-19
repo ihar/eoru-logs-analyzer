@@ -97,12 +97,32 @@ df[na_row_num+1,]
 # Ошибка на сервере привела к сбою записи в лог-файл
 df <- df[-na_row_num,]
 
+# Распределение количества запросов по дням
+dates_to_plot <- format(df$date, format="%m-%d")
+d_df <- as.data.frame(table(dates_to_plot))
+library("ggplot2")
+p <- ggplot(d_df, aes(x=dates_to_plot, y=Freq)) + 
+  geom_bar(stat="identity") +
+  theme_bw() +  
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.text.x = element_text(angle = 90)) +
+  xlab("Дата") + ylab("Количество запросов")
+p
+ggsave("requests-by-days.png", plot = p, path = "./img/")
+# Дни с большим количеством ошибочных запросов
+d_df[d_df$Freq>250,]
+# 01-20  356
+# 04-02  344
+# 04-11  265
+# 04-26  254
+# 12-20  336
+
 # Слова по убыванию частоты запроса
 wrong_words_decreasing <- sort(word_table, decreasing=TRUE)
 word_limit  <-  10
 # как  львЁнок и черепаха пельи песьню, ага
 head(wrong_words_decreasing, word_limit)  
 tail(wrong_words_decreasing, word_limit)
-
-
 
