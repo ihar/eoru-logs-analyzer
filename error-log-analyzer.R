@@ -98,6 +98,7 @@ df <- df[-na_row_num,]
 
 # Слова по убыванию частоты запроса
 wrong_words_decreasing <- sort(word_table, decreasing=TRUE)
+word_limit  <-  10
 # как  львЁнок и черепаха пельи песьню, ага
 head(wrong_words_decreasing, word_limit)  
 tail(wrong_words_decreasing, word_limit)
