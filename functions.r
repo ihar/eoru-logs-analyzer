@@ -57,9 +57,33 @@ CleanData <- function(df) {
   df <- na.omit(df)
   # Чтобы даты конвертировались правильно,
   # надо включить английскую локаль
+  Sys.setenv(TZ = "GMT")
   Sys.setlocale(category="LC_TIME", "English")
   df$date <- strptime(df$date, "%Y-%m-%d %H:%M:%S")
   df$text <- gsub("'", "", df$text)
   return(df)
 }
 
+# Модернизированная версия
+# http://stackoverflow.com/questions/13018570/convert-character-to-html-in-r
+Entity2Txt <- function(x){
+  # Преобразование хтмл-сущностей вроде &#232; в буквы с диакритикой
+  # marteli&#285;i -> marteligxi
+  #
+  # Args:
+  #   x: Строчка, возможно содержащая хтмл-сущности
+  # 
+  # Returns:
+  #   Декодированная строчка в суррогатной записи
+  dictionary <- data.frame(
+    letter = c("Cx", "cx","Gx", "gx", 
+               "Hx", "hx", "Jx", "jx", 
+               "Sx", "sx", "Ux", "ux"),
+    entity = c("&#264;", "&#265;","&#284;", "&#285;", 
+               "&#292;", "&#293;", "&#308;", "&#309;", 
+               "&#348;", "&#349;", "&#364;", "&#365;"))
+  for(i in 1:dim(dictionary)[1]) {
+    x <- gsub(dictionary$entity[i],dictionary$letter[i],x)
+  }
+  return(x)
+}
