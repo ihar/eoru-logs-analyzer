@@ -49,3 +49,19 @@ write.table(data.frame(cbind(Freq = df_wrong_pages_by_freq$Freq,
             quote = FALSE,
             row.names = FALSE)
 
+# Распределение количества запросов по дням
+dates_to_plot <- format(wrong_pages$date, format="%m-%d")
+d_df <- as.data.frame(table(dates_to_plot))
+library("ggplot2")
+p <- ggplot(d_df, aes(x=dates_to_plot, y=Freq)) + 
+  geom_bar(stat="identity") +
+  theme_bw() +  
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.text.x = element_text(angle = 90)) +
+  xlab("Дата") + ylab("Количество запросов")
+p
+ggsave("wrong-pages-by-days.png", plot = p, path = "./img/")
+# Дни с большим количеством ошибочных запросов
+d_df[d_df$Freq>100,]
