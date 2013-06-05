@@ -19,7 +19,7 @@ df_severity <- subset(df, df$message == "Severity")
 df_severity$message <- NULL
 str(df_severity)
 
-df_severities <- as.data.frame(table(df_query_error$text), stringsAsFactors=FALSE)
+df_severities <- as.data.frame(table(df_severity$text), stringsAsFactors=FALSE)
 # Illegal character  962
 # Только такой текст у ошибок типа Severity.
 # Другого нельзя было ожидать, так как функция CelanData на 15 строчке
