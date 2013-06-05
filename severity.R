@@ -1,5 +1,5 @@
 # Запросы Severity
-
+rm(list=ls(all=TRUE))
 data_dir <- "d:/webservers/other/eoru_logs/2012/"
 data_files <- list.files(data_dir, "*.txt")
 
@@ -28,11 +28,13 @@ df_severities
 
 dates_to_plot <- format(df_severity$date, format="%m-%d")
 d_df <- as.data.frame(table(dates_to_plot))
+axes_dates <- d_df$dates_to_plot[seq(1, nrow(d_df), 7)]
 library("ggplot2")
 p <- ggplot(d_df, aes(x=dates_to_plot, y=Freq)) + 
   geom_bar(stat="identity") +
   theme_bw() +  
+  scale_x_discrete(breaks = axes_dates, labels=axes_dates) +
   theme(axis.text.x = element_text(angle = 90)) +
-  xlab("Дата") + ylab("Количество запросов")
+  xlab("Дата") + ylab("Количество запросов")  
 p
 ggsave("severities-by-days.png", plot = p, path = "./img/")

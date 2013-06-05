@@ -1,5 +1,5 @@
 # Запросы Query error
-
+rm(list=ls(all=TRUE))
 data_dir <- "d:/webservers/other/eoru_logs/2012/"
 data_files <- list.files(data_dir, "*.txt")
 

@@ -3,7 +3,7 @@
 # Все подобные обращения к сайту сохраняются в текстовый файл, по одному файлу на день.
 # 
 # Анализ логов поможет узнать, как можно улучшить систему поиска на сайте.
-
+rm(list=ls(all=TRUE))
 data_dir <- "d:/webservers/other/eoru_logs/2012/"
 # data_dir <- "./data/"
 data_files <- list.files(data_dir, "*.txt")
@@ -100,19 +100,22 @@ df <- df[-na_row_num,]
 # Распределение количества запросов по дням
 dates_to_plot <- format(df$date, format="%m-%d")
 d_df <- as.data.frame(table(dates_to_plot))
+axes_dates <- d_df$dates_to_plot[seq(1, nrow(d_df), 7)]
 library("ggplot2")
+
+threshold  <-  250 # дни с количеством запросов, больше данного
 p <- ggplot(d_df, aes(x=dates_to_plot, y=Freq)) + 
   geom_bar(stat="identity") +
   theme_bw() +  
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        axis.text.x = element_text(angle = 90)) +
-  xlab("Дата") + ylab("Количество запросов")
-p
-ggsave("requests-by-days.png", plot = p, path = "./img/")
+  theme(axis.text.x = element_text(angle = 90)) +
+  scale_x_discrete(breaks = axes_dates, labels=axes_dates) +
+  xlab("Дата") + ylab("Количество ошибочных запросов")
+
+p2 <- p + geom_hline(yintercept = threshold, colour = "red")
+p2
+ggsave("requests-by-days.png", plot = p2, path = "./img/")
 # Дни с большим количеством ошибочных запросов
-d_df[d_df$Freq>250,]
+d_df[d_df$Freq>threshold,]
 # 01-20  356
 # 04-02  344
 # 04-11  265

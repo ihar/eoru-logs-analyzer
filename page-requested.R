@@ -1,5 +1,5 @@
 # Запросы Page requested
-
+rm(list=ls(all=TRUE))
 data_dir <- "d:/webservers/other/eoru_logs/2012/"
 # data_dir <- "./data/"
 data_files <- list.files(data_dir, "*.txt")
@@ -52,16 +52,17 @@ write.table(data.frame(cbind(Freq = df_wrong_pages_by_freq$Freq,
 # Распределение количества запросов по дням
 dates_to_plot <- format(wrong_pages$date, format="%m-%d")
 d_df <- as.data.frame(table(dates_to_plot))
+# Отображать в подписи на оси асбцисс каждый седьмой день
+axes_dates <- d_df$dates_to_plot[seq(1, nrow(d_df), 7)]
 library("ggplot2")
+threshold <- 100
 p <- ggplot(d_df, aes(x=dates_to_plot, y=Freq)) + 
   geom_bar(stat="identity") +
   theme_bw() +  
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        axis.text.x = element_text(angle = 90)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  scale_x_discrete(breaks = axes_dates, labels=axes_dates) +
   xlab("Дата") + ylab("Количество запросов")
-p
-ggsave("wrong-pages-by-days.png", plot = p, path = "./img/")
+p2 <- p +  geom_hline(yintercept = threshold, colour = "red")
+ggsave("wrong-pages-by-days.png", plot = p2, path = "./img/")
 # Дни с большим количеством ошибочных запросов
-d_df[d_df$Freq>100,]
+d_df[d_df$Freq>threshold,]
