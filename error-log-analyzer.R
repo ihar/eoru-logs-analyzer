@@ -32,6 +32,27 @@ df$type <- NULL
 
 table(df$message)
 
+#Все типы ошибок на одном графике
+library("ggplot2")
+df2 <- data.frame(date = format(df$date, format="%m-%d"), message = df$message)
+p <- ggplot(df2, aes(date)) + 
+      geom_bar() + 
+      theme(axis.ticks.x = element_blank(), axis.text.x = element_blank())  +
+      facet_wrap(~message)
+p
+ggsave("by-error-type.png", plot = p, path = "./img/")
+
+unique_dates <- unique(df2$date)
+axes_dates <- unique_dates[seq(1, length(unique_dates), 7)]
+p <- ggplot(df2, aes(date)) +
+      geom_freqpoly(aes(group=message, colour=message, )) +
+      theme_bw() +  
+      theme(axis.text.x = element_text(angle = 90)) +
+      scale_x_discrete(breaks = axes_dates, labels=axes_dates) +
+      xlab("Дата") + ylab("Количество ошибочных запросов")
+p
+ggsave("by-error-type-frequency.png", plot = p, path = "./img/")
+
 df_wrong_word <- subset(df, df$message == "Wrong word requested")
 df_wrong_word$message <- NULL
 
@@ -101,7 +122,6 @@ df <- df[-na_row_num,]
 dates_to_plot <- format(df$date, format="%m-%d")
 d_df <- as.data.frame(table(dates_to_plot))
 axes_dates <- d_df$dates_to_plot[seq(1, nrow(d_df), 7)]
-library("ggplot2")
 
 threshold  <-  250 # дни с количеством запросов, больше данного
 p <- ggplot(d_df, aes(x=dates_to_plot, y=Freq)) + 
